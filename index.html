@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#050309">
+
+<title>Hendi Ependi - Pembayaran</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+:root {
+    --void: #050309;
+    --violet: #8b3dff;
+    --violet-soft: #c9a2ff;
+    --ice: #4aa8ff;
+    --text: #f3ecff;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Chakra Petch', sans-serif;
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px 110px;
+    position: relative;
+    overflow-x: hidden;
+
+    /* Ganti 'background.png' dengan gambar wallpaper kamu.
+       Jika file tidak ada, aura ungu di bawah tetap tampil. */
+    background:
+        linear-gradient(rgba(5, 3, 9, 0.55), rgba(5, 3, 9, 0.8)),
+        url('background.png') no-repeat center center fixed,
+        var(--void);
+    background-size: cover;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+        radial-gradient(ellipse 45% 40% at 0% 62%, rgba(139, 61, 255, 0.28), transparent 70%),
+        radial-gradient(ellipse 45% 40% at 100% 62%, rgba(139, 61, 255, 0.28), transparent 70%),
+        radial-gradient(ellipse 50% 22% at 50% 38%, rgba(74, 168, 255, 0.10), transparent 70%);
+}
+
+/* ===== BRAND LOGO ===== */
+.brand-logo {
+    width: 200px;
+    max-width: 60%;
+    margin-bottom: 30px;
+    filter: drop-shadow(0 0 18px rgba(139, 61, 255, 0.55));
+    animation: fadeDown 1s ease;
+}
+
+#list {
+    width: 100%;
+    max-width: 450px;
+}
+
+/* ===== JUDUL KELOMPOK ===== */
+.group-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 28px 4px 14px;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    color: var(--violet-soft);
+    text-shadow: 0 0 10px rgba(139, 61, 255, 0.6);
+}
+
+.group-title::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(139, 61, 255, 0.7), rgba(74, 168, 255, 0));
+}
+
+.group-title:first-child {
+    margin-top: 0;
+}
+
+/* ===== CARD STYLE ===== */
+.box {
+    position: relative;
+    width: 100%;
+    background: rgba(13, 8, 23, 0.72);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(139, 61, 255, 0.28);
+    border-radius: 14px;
+    padding: 18px 18px 18px 24px;
+    margin-bottom: 14px;
+    box-shadow: 0 0 22px rgba(139, 61, 255, 0.12), inset 0 0 20px rgba(139, 61, 255, 0.04);
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    opacity: 0;
+    transform: translateY(24px);
+    animation: fadeUp 0.7s ease forwards;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.box::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 16%;
+    bottom: 16%;
+    width: 3px;
+    border-radius: 3px;
+    background: linear-gradient(180deg, var(--violet), var(--ice));
+    box-shadow: 0 0 10px var(--violet);
+}
+
+.box:hover {
+    border-color: rgba(74, 168, 255, 0.5);
+    box-shadow: 0 0 28px rgba(74, 168, 255, 0.2), inset 0 0 20px rgba(139, 61, 255, 0.06);
+}
+
+/* Payment Logo */
+.payment-logo {
+    width: 55px;
+    height: 40px;
+    object-fit: contain;
+    flex-shrink: 0;
+    filter: drop-shadow(0 0 6px rgba(139, 61, 255, 0.35));
+}
+
+/* Cadangan jika file logo belum ada */
+.logo-fallback {
+    width: 55px;
+    height: 40px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(139, 61, 255, 0.5);
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--violet-soft);
+    background: rgba(139, 61, 255, 0.12);
+    text-align: center;
+}
+
+/* Info */
+.info {
+    flex: 1;
+    margin-left: 16px;
+    min-width: 0;
+}
+
+.info h3 {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--violet-soft);
+    letter-spacing: 0.6px;
+    margin-bottom: 2px;
+}
+
+.info p {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: 1px;
+    font-variant-numeric: tabular-nums;
+    text-shadow: 0 0 12px rgba(139, 61, 255, 0.55);
+    overflow-wrap: anywhere;
+}
+
+/* Button */
+button {
+    font-family: inherit;
+    padding: 8px 20px;
+    border: 1px solid rgba(74, 168, 255, 0.55);
+    border-radius: 10px;
+    background: linear-gradient(135deg, #8b3dff, #3a7bff);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: transform 0.25s, box-shadow 0.25s, background 0.25s;
+    box-shadow: 0 0 14px rgba(139, 61, 255, 0.45);
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 22px rgba(74, 168, 255, 0.65);
+    background: linear-gradient(135deg, #3a7bff, #8b3dff);
+}
+
+button:active {
+    transform: translateY(0) scale(0.97);
+}
+
+button:focus-visible {
+    outline: 2px solid var(--ice);
+    outline-offset: 3px;
+}
+
+/* ===== NOTE BUKTI TRANSFER ===== */
+.note {
+    width: 100%;
+    max-width: 450px;
+    margin-top: 30px;
+    padding: 20px 18px 20px 24px;
+    border-radius: 14px;
+    border: 1px dashed rgba(74, 168, 255, 0.55);
+    background: rgba(74, 168, 255, 0.07);
+    box-shadow: 0 0 24px rgba(74, 168, 255, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+}
+
+.note-text {
+    min-width: 0;
+}
+
+.note-text .lead {
+    font-size: 13px;
+    color: var(--violet-soft);
+    letter-spacing: 0.4px;
+    margin-bottom: 6px;
+}
+
+.note-text .who {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.note-text .num {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-shadow: 0 0 12px rgba(74, 168, 255, 0.6);
+}
+
+/* Toast */
+.toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translate(-50%, 12px);
+    background: rgba(13, 8, 23, 0.95);
+    color: var(--text);
+    border: 1px solid var(--ice);
+    padding: 12px 25px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.4s;
+    box-shadow: 0 0 22px rgba(74, 168, 255, 0.45);
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+
+@keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 380px) {
+    .info p, .note-text .num { font-size: 16px; }
+    .payment-logo, .logo-fallback { width: 46px; }
+    button { padding: 8px 14px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .box, .brand-logo {
+        animation: none;
+        opacity: 1;
+        transform: none;
+    }
+    * { transition: none !important; }
+}
+
+</style>
+</head>
+
+<body>
+
+<img src="logo.png" class="brand-logo" alt="Logo">
+
+<div id="list"></div>
+
+<div class="note">
+    <div class="note-text">
+        <p class="lead">Harap kirim bukti transfernya ke :</p>
+        <p class="who">Hendi Ependi</p>
+        <p class="num" id="wa">081380410805</p>
+    </div>
+    <button onclick="copyText('081380410805')">Copy</button>
+</div>
+
+<div id="toast" class="toast" role="status">Number Copied!</div>
+
+<script>
+/*
+  Edit data rekening di sini.
+  logo = nama file gambar di repo (mandiri.png dan dana.png perlu kamu upload).
+*/
+var NAME = "Hendi Ependi";
+
+var groups = [
+    { title: "Pribadi", items: [
+        { bank: "Mandiri", logo: "mandiri.png", number: "1330012644951" },
+        { bank: "BRI",     logo: "bri.png",     number: "437601024022532" }
+    ]},
+    { title: "Bisnis", items: [
+        { bank: "Mandiri", logo: "mandiri.png", number: "1330029692258" },
+        { bank: "BRI",     logo: "bri.png",     number: "437601024477509" },
+        { bank: "BNI",     logo: "bni.png",     number: "1908939055" },
+        { bank: "BCA",     logo: "bca.png",     number: "1672678352" }
+    ]},
+    { title: "E-Wallet", items: [
+        { bank: "DANA",      logo: "dana.png",      number: "081380410805" },
+        { bank: "OVO",       logo: "ovo.png",       number: "081380410805" },
+        { bank: "GoPay",     logo: "gopay.png",     number: "081380410805" },
+        { bank: "ShopeePay", logo: "shopeepay.png", number: "081380410805" }
+    ]},
+    { title: "Pengembalian", items: [
+        { bank: "BCA", logo: "bca.png", number: "7175371281" }
+    ]}
+];
+
+var list = document.getElementById("list");
+var count = 0;
+
+groups.forEach(function (g) {
+    var h = document.createElement("h2");
+    h.className = "group-title";
+    h.textContent = g.title;
+    list.appendChild(h);
+
+    g.items.forEach(function (it) {
+        var box = document.createElement("div");
+        box.className = "box";
+        box.style.animationDelay = Math.min(0.15 + count * 0.07, 0.9) + "s";
+        count++;
+
+        var img = document.createElement("img");
+        img.className = "payment-logo";
+        img.src = it.logo;
+        img.alt = it.bank;
+        img.onerror = function () {
+            var fb = document.createElement("div");
+            fb.className = "logo-fallback";
+            fb.textContent = it.bank;
+            img.replaceWith(fb);
+        };
+
+        var info = document.createElement("div");
+        info.className = "info";
+        var name = document.createElement("h3");
+        name.textContent = NAME + " \u2022 " + it.bank;
+        var num = document.createElement("p");
+        num.textContent = it.number;
+        info.appendChild(name);
+        info.appendChild(num);
+
+        var btn = document.createElement("button");
+        btn.textContent = "Copy";
+        btn.onclick = function () { copyText(it.number); };
+
+        box.appendChild(img);
+        box.appendChild(info);
+        box.appendChild(btn);
+        list.appendChild(box);
+    });
+});
+
+function copyText(text) {
+    function done() {
+        var toast = document.getElementById("toast");
+        toast.classList.add("show");
+        setTimeout(function () { toast.classList.remove("show"); }, 2000);
+    }
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, function () { fallbackCopy(text); done(); });
+    } else {
+        fallbackCopy(text);
+        done();
+    }
+}
+
+function fallbackCopy(text) {
+    var t = document.createElement("textarea");
+    t.value = text;
+    t.style.position = "fixed";
+    t.style.opacity = "0";
+    document.body.appendChild(t);
+    t.select();
+    try { document.execCommand("copy"); } catch (e) {}
+    document.body.removeChild(t);
+}
+</script>
+
+</body>
+</html>
